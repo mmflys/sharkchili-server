@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<shark-config xmlns="http://www.sharkchili.com/schema/all"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://www.sharkchili.com/schema/all SharkConfig-all.xsd">
+    <!--scan path-->
+    <scan-path>
+        <ao>ao</ao>
+        <dao>ao</dao>
+        <service>service</service>
+    </scan-path>
+
+    <!--Datasource for connecting to db-->
+    <datasource name="dataSource" class="com.shark.server.orm.db.SharkPoolDatasource">
+        <url>${url}</url>
+        <driver>${driver}</driver>
+        <username>${username}</username>
+        <password>${password}</password>
+        <database>${database}</database>
+        <connectTimeout>${connectTimeout}</connectTimeout>
+        <connectionMax>${connectionMax}</connectionMax>
+        <connectionInit>${connectionInit}</connectionInit>
+        <connectionIdleTime>${connectionIdleTime}</connectionIdleTime>
+        <connectionAddNumOnceTime>${connectionAddNumOnceTime}</connectionAddNumOnceTime>
+    </datasource>
+
+    <!--Bean are created when system start-->
+    <bean-config>
+        <bean name="teacher" class="com.shark.server.pro.bean.Teacher">
+            <property name="name" value="TuXiao"/>
+            <property name="student" ref="student"/>
+        </bean>
+        <bean name="names" class="java.util.ArrayList" elementClass="java.lang.String">
+            <element value="mike"/>
+            <element>jim</element>
+        </bean>
+        <collection name="numbers" class="java.util.ArrayList" elementClass="java.lang.Integer">
+            <element>13</element>
+        </collection>
+    </bean-config>
+
+    <server-config>
+        <local-server name="game" port="8080" publicAddress="172.0.0.1"/>
+        <remote-server>
+            <remote name="account" port="8081" publicAddress="172.0.0.1"/>
+            <remote name="gate" port="8082" publicAddress="172.0.0.1"/>
+        </remote-server>
+    </server-config>
+
+</shark-config>

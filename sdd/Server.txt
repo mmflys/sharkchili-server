@@ -1,0 +1,16 @@
+﻿The progress of shark server.
+
+1.日志框架 slf4j-logback
+2.测试框架 TestNG-Mockito
+3. ORM
+4. RPC
+5. IOC AOP
+6. Socket Protocol: http,application
+7. WebService
+8. IO: netty
+9. 数据库: mysql/mongodb XA协议(不适用高并发,Atomikos框架)
+10. 任务调度: quartz(支持持久化,预定日期执行)
+11. 缓存框架: Redis(支持持久化,丰富的数据类型,单线程,集群分布式), Memcache(不支持持久化,只支持key-value键值,多线程,集群分布式)
+12. 序列化: json(FastJson)
+13. xml解析: dom4j(基于sax事件驱动解析器)
+n. Main Container

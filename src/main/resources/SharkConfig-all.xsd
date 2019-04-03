@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.sharkchili.com/schema/all">
+
+    <!--类型-->
+    <xs:simpleType name="packagePath">
+        <xs:restriction>
+            <!--包路径正则-->
+            <xs:pattern value="^([a-zA-Z]+[.][a-zA-Z]+)[.]*.*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ipAddress">
+        <xs:restriction>
+            <!--ip地址正则-->
+            <xs:pattern
+                    value="((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--属性-->
+    <xs:attribute name="name" type="xs:token"/>
+    <xs:attribute name="value" type="xs:string"/>
+    <xs:attribute name="ref" type="xs:token"/>
+    <xs:attribute name="class" type="packagePath"/>
+    <xs:attribute name="elementClass" type="packagePath"/>
+    <xs:attribute name="fieldName" type="xs:token"/>
+    <xs:attribute name="port" type="xs:positiveInteger"/>
+    <xs:attribute name="publicAddress" type="ipAddress"/>
+    <xs:attribute name="address" type="ipAddress"/>
+    <!--属性组-->
+    <xs:attributeGroup name="name-value">
+        <xs:attribute ref="name"/>
+        <xs:attribute ref="value"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="name-class">
+        <xs:attribute ref="name"/>
+        <xs:attribute ref="class"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="socketIdentity">
+        <xs:attribute ref="name"/>
+        <xs:attribute ref="port"/>
+        <xs:attribute ref="address"/>
+        <xs:attribute ref="publicAddress"/>
+    </xs:attributeGroup>
+
+    <!--简易元素-->
+    <xs:element name="url" type="xs:token"/>
+    <xs:element name="driver" type="xs:token"/>
+    <xs:element name="username" type="xs:token"/>
+    <xs:element name="password" type="xs:token"/>
+    <xs:element name="database" type="xs:token"/>
+    <xs:element name="connectTimeout" type="xs:token"/>
+    <xs:element name="connectionMax" type="xs:token"/>
+    <xs:element name="connectionInit" type="xs:token"/>
+    <xs:element name="connectionIdleTime" type="xs:token"/>
+    <xs:element name="connectionAddNumOnceTime" type="xs:token"/>
+    <xs:element name="ao" type="packagePath"/>
+    <xs:element name="dao" type="packagePath"/>
+    <xs:element name="service" type="packagePath"/>
+    <!--复合元素-->
+    <xs:element name="property">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:attribute">
+                    <xs:attributeGroup ref="name-value"/>
+                    <xs:attribute ref="ref"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="element">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:attribute">
+                    <xs:attribute ref="value"/>
+                    <xs:attribute ref="ref"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="scan-path">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:all>
+                        <xs:element ref="ao"/>
+                        <xs:element ref="dao"/>
+                        <xs:element ref="service"/>
+                    </xs:all>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="remote">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:attribute">
+                    <xs:attributeGroup ref="socketIdentity"/>
+                    <xs:attribute ref="class" default="com.shark.server.socket.socket.SocketIdentity"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="local-server">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:attribute">
+                    <xs:attributeGroup ref="socketIdentity"/>
+                    <xs:attribute ref="class" default="com.shark.server.socket.socket.SocketIdentity"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="remote-server">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:sequence>
+                        <xs:element ref="remote" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:attribute ref="class" default="java.util.ArrayList"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="server-config">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:all>
+                        <xs:element ref="local-server"/>
+                        <xs:element ref="remote-server"/>
+                    </xs:all>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="bean">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:choice>
+                        <xs:element ref="property" maxOccurs="unbounded"/>
+                        <xs:element ref="element" maxOccurs="unbounded"/>
+                    </xs:choice>
+                    <xs:attributeGroup ref="name-class"/>
+                    <xs:attribute ref="elementClass"/>
+                    <xs:attribute ref="fieldName"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="collection">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:sequence>
+                        <xs:element ref="element" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:attributeGroup ref="name-class"/>
+                    <xs:attribute ref="elementClass"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="bean-config">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:sequence>
+                        <xs:element ref="bean" maxOccurs="unbounded"/>
+                        <xs:element ref="collection" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="datasource">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:all>
+                        <xs:element ref="url"/>
+                        <xs:element ref="driver"/>
+                        <xs:element ref="username"/>
+                        <xs:element ref="password"/>
+                        <xs:element ref="database"/>
+                        <xs:element ref="connectTimeout"/>
+                        <xs:element ref="connectionMax"/>
+                        <xs:element ref="connectionInit"/>
+                        <xs:element ref="connectionIdleTime"/>
+                        <xs:element ref="connectionAddNumOnceTime"/>
+                    </xs:all>
+                    <xs:attributeGroup ref="name-class"/>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="shark-config">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="xs:element">
+                    <xs:all>
+                        <xs:element ref="scan-path"/>
+                        <xs:element ref="datasource"/>
+                        <xs:element ref="bean-config"/>
+                        <xs:element ref="server-config"/>
+                    </xs:all>
+                    <xs:anyAttribute namespace="##other" processContents="lax"/>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+        <!--xmlns:xs="http://www.w3.org/2001/XMLSchema"-->
+        <!--显示 schema 中用到的元素和数据类型来自命名空间 "http://www.w3.org/2001/XMLSchema"。同时它还规定了来自命名空间 "http://www.w3.org/2001/XMLSchema" 的元素和数据类型应该使用前缀 xs：-->
+        <!--targetNamespace="http://www.sharkchili.com"-->
+        <!--显示被此 schema 定义的元素 (note, to, from, heading, body) 来自命名空间：http://xxx.com-->
+        <!--elementFormDefault="qualified"-->
+        <!--指出任何 XML 实例文档所使用的且在此 schema 中声明过的元素必须被命名空间限定。-->
