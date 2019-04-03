@@ -18,7 +18,7 @@
 
     <name>sharkchili-server</name>
     <description>A stacked server frame,contain orm,rpc,http message and so on.</description>
-    <url>https://47.99.220.192:17214/home/git/repository/java/sharkchili/sharkchili-server</url>
+    <url>https://www.fishbyby.com/sharkchili/sharkchili-server</url>
 
     <dependencies>
         <!--modules-->
